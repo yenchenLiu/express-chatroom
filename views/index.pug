@@ -38,21 +38,8 @@ block content
                                     = reqUser.username
                                 p 1767 Messages
                         span#action_menu_btn
-                            i.fas.fa-ellipsis-v
-                        .action_menu
-                            ul
-                                li
-                                    i.fas.fa-user-circle
-                                    |  View profile
-                                li
-                                    i.fas.fa-users
-                                    |  Add to close friends
-                                li
-                                    i.fas.fa-plus
-                                    |  Add to group
-                                li
-                                    i.fas.fa-ban
-                                    |  Block
+                            a(href="/auth/logout")
+                                i.fas.fa-sign-out-alt
                     .card-body.msg_card_body
                         each message in messages
                             .d-flex.justify-content-start.mb-4

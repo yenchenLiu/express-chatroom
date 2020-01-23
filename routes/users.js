@@ -10,16 +10,6 @@ router.post('/create', function(req, res) {
       });
 });
 
-router.get('/:user_id/destroy', function(req, res) {
-  models.User.destroy({
-    where: {
-      id: req.params.user_id
-    }
-  }).then(function() {
-    res.redirect('/');
-  });
-});
-
 router.post('/:user_id/messages/create', function (req, res) {
   models.Message.create({
     content: req.body.content,
@@ -28,17 +18,6 @@ router.post('/:user_id/messages/create', function (req, res) {
     res.redirect('/');
   });
 });
-
-router.get('/:user_id/messages/:message_id/destroy', function (req, res) {
-  models.Message.destroy({
-    where: {
-      id: req.params.message_id
-    }
-  }).then(function() {
-    res.redirect('/');
-  });
-});
-
 
 
 module.exports = router;

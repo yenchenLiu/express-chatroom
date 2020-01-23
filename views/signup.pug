@@ -8,14 +8,14 @@ block content
         .row
             .col-md-offset-5.col-md-3
                 .form-login
-                    h4 Welcome back.
-                    form(action="/auth/login", method="post")
+                    h4 Signup.
+                    form(action="/auth/signup", method="post")
                         input#userName.form-control.input-sm.chat-input(type='text' name='username' placeholder='username')
                         br
                         input#userPassword.form-control.input-sm.chat-input(type='text' name='password' placeholder='password')
                         br
                         .wrapper
                             span.group-btn
-                                a(href="/auth/signup")
-                                    | Want to signup
-                                input(type="submit" class="btn btn-primary btn-md" value="login")
+                                a(href="/auth/login")
+                                    | back to Login
+                                input(type="submit" class="btn btn-primary btn-md" value="Signup")

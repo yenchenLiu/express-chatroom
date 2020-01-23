@@ -9,13 +9,18 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-session": "^1.17.0",
+    "express-session-sequelize": "^2.2.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "pg": "^7.17.1",
     "pg-hstore": "^2.3.3",
     "pug": "^2.0.4",
     "sequelize": "^5.21.3",
     "sequelize-cli": "^5.5.1",
+    "sjcl": "^1.0.8",
     "sqlite3": "^4.1.1"
   }
 }

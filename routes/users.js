@@ -4,11 +4,10 @@ var router = express.Router();
 
 
 router.post('/create', function(req, res) {
-  models.User.create({
-    username: req.body.username
-  }).then(function() {
-    res.redirect('/');
-  });
+  models.User.createUser( req.body.username, req.body.password)
+      .then(function() {
+        res.redirect('/');
+      });
 });
 
 router.get('/:user_id/destroy', function(req, res) {

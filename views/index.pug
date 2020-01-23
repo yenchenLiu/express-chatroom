@@ -34,7 +34,8 @@ block content
                                 img.rounded-circle.user_img(src='https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg')
                                 span.online_icon
                             .user_info
-                                span Chat Room
+                                span
+                                    = reqUser.username
                                 p 1767 Messages
                         span#action_menu_btn
                             i.fas.fa-ellipsis-v
@@ -62,47 +63,53 @@ block content
                                     span.msg_time
                                         = message.createdAt
                     .card-footer
-                        .input-group
-                            .input-group-append
-                                span.input-group-text.attach_btn
-                                    i.fas.fa-paperclip
-                            textarea.form-control.type_msg(name='' placeholder='Type your message...')
-                            .input-group-append
-                                span.input-group-text.send_btn
-                                    i.fas.fa-location-arrow
-    div(class="col-md-4")
-        h2 Create user
+                        form(action="/users/" + reqUser.id + "/messages/create", method="post", id="submitMessageForm")
+                            .input-group
+                                .input-group-append
+                                    span.input-group-text.attach_btn
+                                        i.fas.fa-paperclip
+                                textarea.form-control.type_msg(name='content' placeholder='Type your message...')
+                                .input-group-append
+                                    span.input-group-text.send_btn
+                                        i.fas.fa-location-arrow(id="submitMessage")
+                                        script.
+                                            document.getElementById("submitMessage").onclick = function() {
+                                                document.getElementById("submitMessageForm").submit();
+                                            }
+    if reqUser.role === "admin"
+        div(class="col-md-4")
+            h2 Create user
 
-        form(action="/users/create", method="post", class="well")
-            div(class="form-group")
-                label(for="username")
-                    | Username
-                input(type="text", name="username", class="form-control")
-            input(type="submit" class="btn btn-default")
+            form(action="/users/create", method="post", class="well")
+                div(class="form-group")
+                    label(for="username")
+                        | Username
+                    input(type="text", name="username", class="form-control")
+                    label(for="password")
+                        | Password
+                    input(type="password", name="password", class="input-sm form-control")
+                input(type="submit" class="btn btn-default")
 
-    div(class="col-md-6")
-        h2 Users
+        div(class="col-md-6")
+            h2 Users
 
-        ul
-            each user in users
-                li
-                    strong
-                        = user.username
-                    | &nbsp;
-                    a(href="/users/" + user.id + "/destroy", class="btn btn-xs btn-warning") delete
-                    ul
-                        li
-                            | Create message
-                            form(action="/users/" + user.id + "/messages/create", method="post", class="form-inline")
-                                div(class="form-group")
-                                    input(type="text", name="content", class="input-sm form-control")
-                                    input(type="submit", class="btn btn-sm btn-default")
-                        each message in user.Messages
+            ul
+                each user in users
+                    li
+                        strong
+                            = user.username
+                        | &nbsp;
+                        a(href="/users/" + user.id + "/destroy", class="btn btn-xs btn-warning") delete
+                        ul
                             li
-                                strong
-                                    = message.content
-                                | &nbsp;
-                                a(href="/users/" + user.id + "/messages/" + message.id + "/destroy",  class="btn btn-xs btn-warning") delete
-
-
-
+                                | Create message
+                                form(action="/users/" + user.id + "/messages/create", method="post", class="form-inline")
+                                    div(class="form-group")
+                                        input(type="text", name="content", class="input-sm form-control")
+                                        input(type="submit", class="btn btn-sm btn-default")
+                            each message in user.Messages
+                                li
+                                    strong
+                                        = message.content
+                                    | &nbsp;
+                                    a(href="/users/" + user.id + "/messages/" + message.id + "/destroy",  class="btn btn-xs btn-warning") delete

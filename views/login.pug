@@ -1,0 +1,19 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/stylesheets/login.css')
+
+block content
+    .container
+        .row
+            .col-md-offset-5.col-md-3
+                .form-login
+                    h4 Welcome back.
+                    form(action="/auth/login", method="post")
+                        input#userName.form-control.input-sm.chat-input(type='text' name='username' placeholder='username')
+                        br
+                        input#userPassword.form-control.input-sm.chat-input(type='text' name='password' placeholder='password')
+                        br
+                        .wrapper
+                            span.group-btn
+                                input(type="submit" class="btn btn-primary btn-md" value="login")

@@ -1,19 +1,13 @@
-var models  = require('../models');
-var express = require('express');
-var router = express.Router();
+const models  = require('../models');
+const express = require('express');
 
+const router = express.Router();
 
-router.post('/create', function(req, res) {
-  models.User.createUser( req.body.username, req.body.password)
-      .then(function() {
-        res.redirect('/');
-      });
-});
-
-router.post('/:user_id/messages/create', function (req, res) {
+router.post('/messages/create', function (req, res) {
+    console.log(req.params.user_id);
   models.Message.create({
     content: req.body.content,
-    UserId: req.params.user_id
+    UserId: req.user.id,
   }).then(function() {
     res.redirect('/');
   });

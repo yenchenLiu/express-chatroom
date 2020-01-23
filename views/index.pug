@@ -50,7 +50,7 @@ block content
                                     span.msg_time
                                         = message.createdAt
                     .card-footer
-                        form(action="/users/" + reqUser.id + "/messages/create", method="post", id="submitMessageForm")
+                        form(action="/users/messages/create", method="post", id="submitMessageForm")
                             .input-group
                                 .input-group-append
                                     span.input-group-text.attach_btn
@@ -64,39 +64,27 @@ block content
                                                 document.getElementById("submitMessageForm").submit();
                                             }
     if reqUser.role === "admin"
-        div(class="col-md-4")
-            h2 Create user
+        h2 Users
+            div(class="col-md-4")
+                h2 Create user
 
-            form(action="/users/create", method="post", class="well")
-                div(class="form-group")
-                    label(for="username")
-                        | Username
-                    input(type="text", name="username", class="form-control")
-                    label(for="password")
-                        | Password
-                    input(type="password", name="password", class="input-sm form-control")
-                input(type="submit" class="btn btn-default")
+                form(action="/admin/create", method="post", class="well")
+                    div(class="form-group")
+                        label(for="username")
+                            | Username
+                        input(type="text", name="username", class="form-control")
+                        label(for="password")
+                            | Password
+                        input(type="password", name="password", class="input-sm form-control")
+                    input(type="submit" class= "btn btn-default")
 
-        div(class="col-md-6")
-            h2 Users
+            div(class="col-md-6")
 
-            ul
-                each user in users
-                    li
-                        strong
-                            = user.username
-                        | &nbsp;
-                        a(href="/users/" + user.id + "/destroy", class="btn btn-xs btn-warning") delete
-                        ul
-                            li
-                                | Create message
-                                form(action="/users/" + user.id + "/messages/create", method="post", class="form-inline")
-                                    div(class="form-group")
-                                        input(type="text", name="content", class="input-sm form-control")
-                                        input(type="submit", class="btn btn-sm btn-default")
-                            each message in user.Messages
-                                li
-                                    strong
-                                        = message.content
-                                    | &nbsp;
-                                    a(href="/users/" + user.id + "/messages/" + message.id + "/destroy",  class="btn btn-xs btn-warning") delete
+                ul
+                    each user in users
+                        li
+                            strong
+                                = user.username
+                            | &nbsp;
+                            form(action="/admin/" + user.id + "/destroy", method="post")
+                                input(type="submit" class="btn btn-xs btn-warning" value="delete")

@@ -8,7 +8,7 @@ const SessionStore = require('express-session-sequelize')(expressSession.Store);
 
 const passport = require('./middleware/passport');
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const messageRouter = require('./routes/message');
 const authRouter = require('./routes/auth');
 const adminRouter = require('./routes/admin');
 const models = require('./models');
@@ -24,16 +24,18 @@ const sequelizeSessionStore = new SessionStore({
   db: models.sequelize,
 });
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(expressSession({
+const sessionParser = expressSession({
   secret: 'secret key need to store to save placed.',
   store: sequelizeSessionStore,
   resave: false,
   saveUninitialized: false,
-}));
+});
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(sessionParser);
 
 // passport
 app.use(passport.initialize());
@@ -44,9 +46,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // App router
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', messageRouter);
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -64,4 +67,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = {
+  app,
+  sessionParser
+};

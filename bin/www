@@ -4,10 +4,12 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('express-js:server');
-var http = require('http');
-var models = require('../models');
+const { app, sessionParser } = require('../app');
+const debug = require('debug')('express-js:server');
+const http = require('http');
+const models = require('../models');
+
+const WebSocket = require('ws');
 
 /**
  * Get port from environment and store in Express.
@@ -21,16 +23,61 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+
 
 models.sequelize.sync().then(function() {
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-  server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
+
+
+  server.on('upgrade', function(request, socket, head) {
+    sessionParser(request, {}, () => {
+      if (!request.session.passport.user) {
+        socket.destroy();
+        return;
+      }
+
+      wss.handleUpgrade(request, socket, head, function(ws) {
+        wss.emit('connection', ws, request);
+      });
+    });
+  });
+  server.listen(port);
+
 });
+
+
+wss.on('connection', function(ws, request) {
+  const userId = request.session.passport.user.id;
+
+  ws.on('message', function(message) {
+    console.log(`Received message ${message} from user ${userId}`);
+  });
+
+  ws.on('error', function(err) {
+    console.log(err);
+  });
+
+  ws.on('close', function() {
+    console.log('close');
+  });
+
+  app.on("newMessage", function (message) {
+    ws.send(message);
+  });
+
+  // eventEmitter.on('newMessage', function (message) {
+  //   ws.send(message);
+  // });
+
+});
+
+
 
 /**
  * Normalize a port into a number, string, or false.

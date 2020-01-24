@@ -40,7 +40,7 @@ block content
                         span#action_menu_btn
                             a(href="/auth/logout")
                                 i.fas.fa-sign-out-alt
-                    .card-body.msg_card_body
+                    .card-body.msg_card_body(id="message-container")
                         each message in messages
                             .d-flex.justify-content-start.mb-4
                                 .img_cont_msg
@@ -48,21 +48,18 @@ block content
                                 .msg_cotainer
                                     = `${message.User.username}: ${message.content}`
                                     span.msg_time
-                                        = message.createdAt
+                                        = message.createdAt.toISOString()
                     .card-footer
                         form(action="/users/messages/create", method="post", id="submitMessageForm")
                             .input-group
                                 .input-group-append
                                     span.input-group-text.attach_btn
                                         i.fas.fa-paperclip
-                                textarea.form-control.type_msg(name='content' placeholder='Type your message...')
+                                textarea.form-control.type_msg(id="content_input", name='content' placeholder='Type your message...')
                                 .input-group-append
                                     span.input-group-text.send_btn
-                                        i.fas.fa-location-arrow(id="submitMessage")
-                                        script.
-                                            document.getElementById("submitMessage").onclick = function() {
-                                                document.getElementById("submitMessageForm").submit();
-                                            }
+                                        button(type="submit")
+                                            i.fas.fa-location-arrow()
     if reqUser.role === "admin"
         h2 Users
             div(class="col-md-4")
@@ -88,3 +85,43 @@ block content
                             | &nbsp;
                             form(action="/admin/" + user.id + "/destroy", method="post")
                                 input(type="submit" class="btn btn-xs btn-warning" value="delete")
+    script.
+        let ws = new WebSocket('ws://localhost:3000');
+        const messageContainer = $("#message-container");
+
+        ws.onopen = () => {
+            console.log('open connection')
+        }
+
+        ws.onclose = () => {
+            console.log('close connection')
+        }
+
+        //接收 Server 發送的訊息
+        ws.onmessage = event => {
+            const data = JSON.parse(event.data);
+            if (data[0] === 'NewMessage') {
+                const content = `
+                    <div class="d-flex justify-content-start mb-4">
+                    <div class="img_cont_msg">
+                    <img class="rounded-circle user_img_msg" src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg">
+                    </div><div class="msg_cotainer">${data[2]}: ${data[1]}<span class="msg_time">${data[3]}</span></div></div>
+                    `
+                messageContainer.append(content);
+                messageContainer.scrollTop(messageContainer.prop("scrollHeight"));
+            }
+        }
+
+    script.
+        $("#submitMessageForm").on("submit", function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+            });
+            $("#content_input").val('');
+        });
